@@ -1,0 +1,43 @@
+.nav{
+    background-color: gray;
+}
+
+.langDropdown{
+    max-width: 4em; 
+    min-width: 4em; 
+    width: 4em;
+}
+
+
+@media (max-width: 575.98px) /* Extra small (XS) */ {
+    .offCanvas{
+        border-left-width: 0!important;
+        width: 100%;
+        min-width: 100%;
+    }
+}
+@media (min-width: 576px) /* Small (SM) */ {
+    .offCanvas{
+        max-width: 50%;
+    }
+}
+@media (min-width: 768px) /* Medium (MD) */ {
+    .offCanvas{
+        max-width: 40%;
+    }
+}
+@media (min-width: 992px) /* Large (LG) */ {
+    .offCanvas{
+        max-width: unset;
+    }
+}
+@media (min-width: 1200px) /* Extra large (XL) */ {
+    .offCanvas{
+        max-width: unset;
+    }
+}
+@media (min-width: 1400px) /* Extra extra large (XXL) */ {
+    .offCanvas{
+        max-width: unset;
+    }
+}
