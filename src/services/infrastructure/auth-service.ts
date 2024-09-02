@@ -130,6 +130,7 @@ export class AuthService implements IAuthService {
             this.storage.setItem('refreshToken', authResponse.refreshToken);
             return true;
         } else {
+            await this.logout();
             return false;
         }
     }

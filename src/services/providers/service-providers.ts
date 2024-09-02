@@ -3,6 +3,7 @@ import {AuthService, IAuthService} from "@/services/infrastructure/auth-service"
 import {IStorageService, LocalStorageService} from "@/services/infrastructure/local-storage-service";
 import {ConsoleLoggerService, ILogger} from "@/services/infrastructure/logger-service";
 import {BookService} from "@/services/modelsServices/books-service";
+import {TransactionsService} from "@/services/modelsServices/transactions-service";
 
 
 
@@ -31,4 +32,8 @@ export function getHttpService(){
 
 export function getBooksService(){
     return new BookService(getAuthService(), getHttpService());
+}
+
+export function getTransactionsService(){
+    return new TransactionsService(getHttpService());
 }

@@ -5,12 +5,20 @@ import Link from 'next/link';
 import { useAppContext } from '@/contexts/AppContext';
 import { getAuthService } from '@/services/providers/service-providers';
 import {useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
 
 const authService = getAuthService();
 
 export default function UserNavigation() {
 	const { user, setUser } = useAppContext();
+	const [ isLoggedIn, setIsLoggedIn ] = useState<boolean>(false);
 	const {push} = useRouter();
+
+	useEffect(() => {
+		if (user){
+			setIsLoggedIn(true);
+		}
+	}, []);
 	
 	const handleLogout = () => {
 		authService.logout().then(_ => setUser(null));
@@ -19,7 +27,7 @@ export default function UserNavigation() {
 
 	return (
 		<ul className='navbar-nav'>
-			{user ? (
+			{isLoggedIn && user ? (
 				<>
 					<li className='nav-item'>
 						<Link className='nav-link' href='/profile'>

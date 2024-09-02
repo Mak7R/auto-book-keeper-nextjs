@@ -1,0 +1,60 @@
+
+
+.booksListItem {
+  list-style: none;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 10px;
+  background-color: antiquewhite;
+  margin: 8px 2px;
+  min-height: 60px;
+}
+
+.booksListItem:hover{
+  background-color: beige;
+  box-shadow: 2px 2px 2px aquamarine;
+  border: 1px solid gray;
+}
+
+.bookContent{
+  margin: 2px 20px 2px 10px;
+  display: grid;
+  grid-template-columns: 40% 40% 20%;
+  gap: 10px;
+}
+
+.bookMainInfo{
+  grid-column: 1 / 2;
+}
+
+.bookTitle{
+  font-size: 1.2rem;
+  text-decoration-line: underline;
+  margin-bottom: 4px;
+}
+
+.bookDescription{
+  margin: 0;
+  font-size: small;
+  color: gray;
+}
+
+.bookAdditionalInfo{
+  grid-column: 2 / 3;
+}
+
+.bookAuthor{
+  font-size: 1rem;
+  margin-bottom: 4px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookActions{
+  grid-column: 3 / 4;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}

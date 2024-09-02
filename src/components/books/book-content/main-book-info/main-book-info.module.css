@@ -1,0 +1,19 @@
+
+
+.mainInfoContainer{
+  border: 1px solid gray;
+  border-radius: 20px;
+  padding: 10px;
+  background-color: aquamarine;
+  margin: 2px 2px 10px 2px;
+}
+
+.bookTitle{
+  text-align: center;
+}
+
+.bookId{
+  font-size: 0.8rem;
+  margin: 0;
+  color: gray;
+}

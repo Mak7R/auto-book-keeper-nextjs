@@ -1,5 +1,5 @@
 
-class Book{
+export class Book{
     id: string = ""
     title: string = ""
     ownerId: string = ""

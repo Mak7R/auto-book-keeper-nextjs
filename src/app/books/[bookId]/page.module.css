@@ -1,0 +1,33 @@
+
+
+.leftColumn, .rightColumn {
+  box-sizing: border-box;
+}
+
+.leftColumn {
+  flex: 0 0 60%;
+  order: 1;
+  padding-right: 1%;
+}
+
+.rightColumn {
+  flex: 0 0 40%;
+  order: 2;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .leftColumn, .rightColumn {
+    flex: 0 0 100%;
+  }
+  
+  .leftColumn{
+    order: 2;
+  }
+  .rightColumn {
+    order: 1;
+  }
+}

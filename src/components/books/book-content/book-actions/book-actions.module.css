@@ -1,0 +1,23 @@
+
+
+.actionsContainer{
+  border-radius: 20px;
+  border: 1px solid gray;
+  margin: 2px;
+  padding: 10px;
+}
+
+.actionsTitle{
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.actionsList{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.action{
+  margin: 10px 2px;
+}

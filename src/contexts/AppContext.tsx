@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import {createContext, useContext, useEffect, useState} from 'react';
+import {getAuthService} from "@/services/providers/service-providers";
 
 export type Context = {
 	user: User | null;
@@ -9,10 +10,12 @@ export type Context = {
 
 const AppContext = createContext<Context>({ user: null, setUser: _ => {} });
 
-export function AppWrapper({ children }: { children: React.ReactNode }) {
-	const [user, setUser] = useState<User | null>(null);
 
-	return <AppContext.Provider value={{ user, setUser}}>{children}</AppContext.Provider>;
+export function AppWrapper({ children }: { children: React.ReactNode }) {
+	const authService = getAuthService();
+	const [user, setUser] = useState<User | null>(authService.currentUser);
+	
+	return <AppContext.Provider value={{ user, setUser }}>{children}</AppContext.Provider>;
 }
 
 export function useAppContext() {

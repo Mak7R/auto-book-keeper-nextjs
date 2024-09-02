@@ -24,6 +24,7 @@ export class HttpService implements IHttpService {
     
     private insertAuthorization(init?: RequestInit) : RequestInit | undefined {
         const authHeader = this.authService.authorizeHeader;
+        
         if (authHeader){
             if (init){
                 if (init.headers){

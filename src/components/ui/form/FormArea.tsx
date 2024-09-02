@@ -1,25 +1,25 @@
 import {ChangeEvent} from "react";
 import ErrorsList from "@/components/ui/form/ErrorsList";
 
-interface FormFieldProps {
+interface FormAreaProps {
   label: string;
   name: string;
+  cols: number
   value?: string;
-  type?: string;
   placeholder?: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   errors?: string[] | null
 }
 
-export default function FormField(props: FormFieldProps) {
+export default function FromArea(props: FormAreaProps) {
   return(
     <>
       <label className='form-label'>{props.label}</label>
-      <input
+      <textarea
         className='form-control'
         name={props.name}
+        cols={props.cols}
         value={props.value}
-        type={props.type ?? 'text'}
         onChange={props.onChange}
         placeholder={props.placeholder ?? ''}
       />
