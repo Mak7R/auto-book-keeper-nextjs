@@ -4,7 +4,7 @@ import ErrorsList from "@/components/ui/form/ErrorsList";
 interface FormFieldProps {
   label: string;
   name: string;
-  value?: string;
+  value?: string | number | readonly string[];
   type?: string;
   placeholder?: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;

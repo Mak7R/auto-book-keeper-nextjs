@@ -8,20 +8,20 @@ import {getBooksService} from "@/services/providers/service-providers";
 import {Book} from "@/types/book";
 
 
-interface CreateNewBookProps{
+interface CreateBookProps{
   isLoading: boolean;
   onSuccess?: (book: Book) => void;
 }
 
-interface CreateNewBookModel{
+interface CreateBookModel{
   title: string;
   description: string;
 }
 
-export default function CreateNewBook(props: CreateNewBookProps) {
+export default function CreateBook(props: CreateBookProps) {
   const booksService = getBooksService();  
   
-  const [newBook, setNewBook] = useState<CreateNewBookModel>({title: "", description: "", });
+  const [newBook, setNewBook] = useState<CreateBookModel>({title: "", description: "", });
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

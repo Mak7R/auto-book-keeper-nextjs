@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import BookActions from "@/components/books/book-content/book-actions/book-actions";
 import Loading from "@/components/ui/loading/loading";
 import {Book} from "@/types/book";
+import UsernameRef from "@/components/users/username-ref/username-ref";
 
 interface MainBookInfoProps {
   bookId: string
@@ -33,15 +34,16 @@ export default function MainBookInfo(props: MainBookInfoProps) {
     <>
       <div className={styles.mainInfoContainer}>
         <div>
-          {!book && <Loading />}
-          {book &&
+          {book ?
             <>
               <h3 className={styles.bookTitle}>{book.title}</h3>
               <p className={styles.bookId}>{book.id}</p>
               <p>Description: <br/>{book.description}</p>
               <p>{book.creationTime}</p>
-              <p>{book.ownerId}</p>
+              <p><UsernameRef userId={book.ownerId} /></p>
             </>
+            :
+            <Loading />
           }
         </div>
       </div>

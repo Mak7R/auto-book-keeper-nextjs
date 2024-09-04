@@ -6,7 +6,7 @@ import {useEffect, useState} from "react";
 import {useAppContext} from "@/contexts/AppContext";
 import {useRouter} from "next/navigation";
 import {getBooksService} from "@/services/providers/service-providers";
-import CreateNewBook from "@/components/books/books-list/create-new-book/create-new-book";
+import CreateBook from "@/components/books/books-list/create-book/create-book";
 import {Book} from "@/types/book";
 
 
@@ -52,7 +52,7 @@ export default function BooksList(props: BooksListProps){
           </ul>
       }
       
-      <CreateNewBook isLoading={isLoading} onSuccess={book => setBooks(prevState => [...prevState, book])}/>
+      <CreateBook isLoading={isLoading} onSuccess={book => setBooks(prevState => [...prevState, book])}/>
     </>
   );
 }

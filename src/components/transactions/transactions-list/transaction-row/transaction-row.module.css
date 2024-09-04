@@ -1,0 +1,42 @@
+
+
+.transaction {
+  font-size: 0.85rem;
+}
+
+.descriptionCell {
+  max-width: 20vw;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+.fillContainer {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.actionsButton {
+  font-size: 0.8rem;
+  padding: 0.2rem;
+  border-radius: var(--bs-border-radius-xxl);
+  text-align: center;
+  max-width: 80px;
+  max-height: 32px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

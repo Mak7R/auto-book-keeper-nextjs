@@ -1,6 +1,7 @@
 import styles from './root-navigation-bar.module.css'
 import Link from "next/link";
 import UserNavigation from "@/components/layout/header/user-navigation";
+import NavLinkItem from "@/components/layout/header/nav-link-item/nav-link-item";
 
 export default function RootNavigationBar(){    
     return (
@@ -14,16 +15,9 @@ export default function RootNavigationBar(){
                 </div>
                 <div className="offcanvas-body">
                     <ul className="navbar-nav me-auto">
-                        <li className="nav-item">
-                            <Link className="nav-link" href="/">Home</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" href="/books">Books</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link"  href="/about">About</Link>
-                        </li>
-
+                        <NavLinkItem href="/">Home</NavLinkItem>
+                        <NavLinkItem href="/books">Books</NavLinkItem>
+                        <NavLinkItem href="/about">About</NavLinkItem>
                     </ul>
 
                     <UserNavigation />

@@ -4,6 +4,7 @@ import {ProblemResponse} from "@/types/problem-response";
 import {RegisterResponse} from "@/types/register-response";
 import {IStorageService} from "@/services/infrastructure/local-storage-service";
 import {ILogger} from "@/services/infrastructure/logger-service";
+import {User} from "@/types/user";
 
 export interface IAuthService {
     login(userName: string, password: string) : Promise<ProblemResponse | null>;
@@ -137,8 +138,8 @@ export class AuthService implements IAuthService {
     
     private async fetchUser() : Promise<void> {        
         const __fetchUser = async (userId: string, authHeader: string) : Promise<boolean> => {
-            const response = await fetch(endpoints.users.getUser.url(userId), {
-                method: endpoints.users.getUser.method,
+            const response = await fetch(endpoints.users.getById.url(userId), {
+                method: endpoints.users.getById.method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': authHeader,

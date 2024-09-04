@@ -6,6 +6,7 @@ import { useAppContext } from '@/contexts/AppContext';
 import { getAuthService } from '@/services/providers/service-providers';
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
+import NavLinkItem from "@/components/layout/header/nav-link-item/nav-link-item";
 
 const authService = getAuthService();
 
@@ -29,31 +30,18 @@ export default function UserNavigation() {
 		<ul className='navbar-nav'>
 			{isLoggedIn && user ? (
 				<>
-					<li className='nav-item'>
-						<Link className='nav-link' href='/profile'>
-							Profile
-						</Link>
-					</li>
+					<NavLinkItem href="/profile">Profile</NavLinkItem>
 
 					<li className='nav-item'>
-						<button className='nav-link' onClick={handleLogout}>
+						<button className='nav-link' onClick={handleLogout} data-bs-dismiss="offcanvas">
 							Logout
 						</button>
 					</li>
 				</>
 			) : (
 				<>
-					<li className='nav-item'>
-						<Link className='nav-link' href='/login'>
-							Login
-						</Link>
-					</li>
-
-					<li className='nav-item'>
-						<Link className='nav-link' href='/register'>
-							Register
-						</Link>
-					</li>
+					<NavLinkItem href="/login">Login</NavLinkItem>
+					<NavLinkItem href="/register">Register</NavLinkItem>
 				</>
 			)}
 		</ul>

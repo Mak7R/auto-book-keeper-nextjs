@@ -1,7 +1,6 @@
-import {IBooksService} from "@/services/modelsServices/books-service";
 import {endpoints} from "@/config/enpoints";
-import {IAuthService} from "@/services/infrastructure/auth-service";
 import {IHttpService} from "@/services/infrastructure/http-service";
+import {Transaction} from "@/types/transaction";
 
 
 export interface ITransactionsService{
@@ -17,17 +16,17 @@ export class TransactionsService implements ITransactionsService{
   constructor(private readonly httpService: IHttpService) {
   }
   
-  create(transaction: Transaction): Promise<Transaction> {
-    throw new Error()
-  }
-
-  delete(transactionId: string): Promise<Transaction> {
-    throw new Error()
-  }
-
-  async getAll(bookId: string): Promise<Transaction[]> {
-    const response = await this.httpService.fetch(endpoints.transactions.getTransactions.url(bookId), {
-      method: endpoints.transactions.getTransactions.method,
+  async create(transaction: Transaction): Promise<Transaction> {
+    const createTransactionModel = transaction.transactionTime === "" ?
+      {...transaction, transactionTime: null} : 
+      {...transaction, transactionTime: new Date(transaction.transactionTime)};
+    
+    const response = await this.httpService.fetch(endpoints.transactions.create.url(transaction.bookId), {
+      method: endpoints.transactions.create.method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(createTransactionModel),
     })
 
     if (response.ok){
@@ -37,12 +36,59 @@ export class TransactionsService implements ITransactionsService{
     throw new Error(response.statusText);
   }
 
-  getById(transactionId: string): Promise<Transaction> {
-    throw new Error()
+  async delete(transactionId: string): Promise<Transaction> {
+    const response = await this.httpService.fetch(endpoints.transactions.delete.url(transactionId), {
+      method: endpoints.transactions.delete.method,
+    })
+
+    if (response.ok){
+      return response.json();
+    }
+
+    throw new Error(response.statusText);
   }
 
-  update(transaction: Transaction): Promise<Transaction> {
-    throw new Error()
+  async getAll(bookId: string): Promise<Transaction[]> {
+    const response = await this.httpService.fetch(endpoints.transactions.getAll.url(bookId), {
+      method: endpoints.transactions.getAll.method,
+    });
+
+    if (response.ok){
+      return response.json();
+    }
+
+    throw new Error(response.statusText);
   }
-  
+
+  async getById(transactionId: string): Promise<Transaction> {
+    const response = await this.httpService.fetch(endpoints.transactions.getById.url(transactionId), {
+      method: endpoints.transactions.getById.method,
+    });
+
+    if (response.ok){
+      return response.json();
+    }
+
+    throw new Error(response.statusText);
+  }
+
+  async update(transaction: Transaction): Promise<Transaction> {
+    const updateTransactionModel = transaction.transactionTime === "" ?
+      {...transaction, transactionTime: null} :
+      {...transaction, transactionTime: new Date(transaction.transactionTime)};
+
+    const response = await this.httpService.fetch(endpoints.transactions.update.url(transaction.id), {
+      method: endpoints.transactions.update.method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updateTransactionModel),
+    })
+
+    if (response.ok){
+      return response.json();
+    }
+
+    throw new Error(response.statusText);
+  }
 }

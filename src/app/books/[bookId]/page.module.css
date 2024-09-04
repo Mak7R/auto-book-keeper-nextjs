@@ -5,13 +5,15 @@
 }
 
 .leftColumn {
-  flex: 0 0 60%;
+  max-width: 70%;
+  flex: 0 1 70%;
   order: 1;
   padding-right: 1%;
 }
 
 .rightColumn {
-  flex: 0 0 40%;
+  max-width: 30%;
+  flex: 0 1 30%;
   order: 2;
 }
 
@@ -22,6 +24,7 @@
 
   .leftColumn, .rightColumn {
     flex: 0 0 100%;
+    max-width: 100%;
   }
   
   .leftColumn{

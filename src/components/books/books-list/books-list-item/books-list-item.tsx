@@ -1,20 +1,9 @@
 import styles from './books-list-item.module.css'
+import {Book} from "@/types/book";
+import {formatLocalDate} from "@/libs/datatime/datatime";
+import UsernameRef from "@/components/users/username-ref/username-ref";
 
-function formatLocalDate(dateString: string): string {
-  const utcDate = new Date(dateString);
-  const day = utcDate.getDate();
-  const month = utcDate.getMonth() + 1;
-  const year = utcDate.getFullYear();
-  const hours = utcDate.getHours();
-  const minutes = utcDate.getMinutes();
-  const seconds = utcDate.getSeconds();
 
-  return `${day.toString().padStart(2, '0')}/${month
-    .toString()
-    .padStart(2, '0')}/${year} ${hours.toString().padStart(2, '0')}:${minutes
-    .toString()
-    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
 
 export default function BooksListItem({ book }: {book: Book}) {
   return (
@@ -27,7 +16,7 @@ export default function BooksListItem({ book }: {book: Book}) {
             <p className={styles.bookDescription}>{book.description}</p>
           </div>
           <div className={styles.bookAdditionalInfo}>
-            <h6 className={styles.bookAuthor}>{book.ownerId}</h6>
+            <h6 className={styles.bookAuthor}><UsernameRef userId={book.ownerId}/></h6>
             <p className={styles.bookDescription}>{formatLocalDate(book.creationTime)}</p>
           </div>
           <div className={styles.bookActions}>

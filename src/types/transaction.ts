@@ -1,7 +1,9 @@
 
-class Transaction{
+export class Transaction{
     id: string = ""
+    bookId: string = ""
     nameIdentifier: string = ""
-    transactionTime: Date = new Date();
+    description: string = ""
+    transactionTime: string = new Date().toString();
     value: number = 0
 }

@@ -1,6 +1,6 @@
 import styles from "./page.module.css"
 import MainBookInfo from "@/components/books/book-content/main-book-info/main-book-info";
-import TransactionList from "@/components/books/transactions/transactions-list/transactions-list";
+import TransactionList from "@/components/transactions/transactions-list/transactions-list";
 
 interface BookPageProps{
   params: {
@@ -10,7 +10,7 @@ interface BookPageProps{
 
 export default function BookPage(props: BookPageProps) {
   return (
-    <div className='container-lg mt-3 d-flex flex-wrap'>
+    <div className='container-xl mt-3 d-flex flex-wrap'>
       <div className={styles.leftColumn}>
         <TransactionList bookId={props.params.bookId}/>
       </div>

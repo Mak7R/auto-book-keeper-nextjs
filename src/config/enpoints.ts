@@ -16,7 +16,7 @@ export const endpoints = {
         }
     },
     users: {
-        getUser: {
+        getById: {
             method: 'GET',
             url: (userId: string) => `${apiServer}/api/v1/users/${userId}`
         }
@@ -44,12 +44,24 @@ export const endpoints = {
         }
     },
     transactions: {
-        getTransactions: {
+        getAll: {
             method: 'GET',
             url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions`
         },
-        getTransaction: {
+        create: {
+            method: 'POST',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions`
+        },
+        getById: {
             method: 'GET',
+            url: (transactionId: string) => `${apiServer}/api/v1/users/books/transactions/${transactionId}`
+        },
+        update: {
+            method: 'PUT',
+            url: (transactionId: string) => `${apiServer}/api/v1/users/books/transactions/${transactionId}`
+        },
+        delete: {
+            method: 'DELETE',
             url: (transactionId: string) => `${apiServer}/api/v1/users/books/transactions/${transactionId}`
         }
     }

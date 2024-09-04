@@ -1,0 +1,21 @@
+
+
+
+.transactionsContainer {
+  --transactions-container-padding: 10px;
+  border: 1px solid gray;
+  border-radius: 30px;
+  padding: var(--transactions-container-padding);
+  margin: 2px 2px 10px 2px;
+}
+
+.transactionsTableContainer{
+  min-height: 356px;
+  max-height: calc(100vh - 270px);
+}
+
+.transactionsTableHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
