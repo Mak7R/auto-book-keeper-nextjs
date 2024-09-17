@@ -1,7 +1,6 @@
 
 
 export function formatLocalDate(dateString: string): string {
-  console.log(dateString)
   const utcDate = new Date(dateString);
   const day = utcDate.getDate();
   const month = utcDate.getMonth() + 1;

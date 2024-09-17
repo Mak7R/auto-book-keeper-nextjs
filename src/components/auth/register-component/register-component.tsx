@@ -7,10 +7,10 @@ import {getAllErrorsExclude, ProblemResponse} from "@/types/problem-response";
 import {register as registerAction, RegisterModel} from "@/store/slices/auth-slice/auth-actions";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "@/store";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useRouter} from "next/navigation";
 
 interface RegisterComponentProps {
-
+  returnUrl?: string
 }
 
 export default function RegisterComponent(props: RegisterComponentProps) {
@@ -33,7 +33,6 @@ export default function RegisterComponent(props: RegisterComponentProps) {
   };
 
   const router = useRouter();
-  const searchParams = useSearchParams();
   const handleRegister = async () => {
     setIsLoading(true);
 
@@ -41,7 +40,7 @@ export default function RegisterComponent(props: RegisterComponentProps) {
 
     if (registerProblem){setProblem(registerProblem);}
     else{
-      const returnUrl = searchParams.get('returnUrl') || '/'
+      const returnUrl = props.returnUrl || '/'
       router.replace(returnUrl)
     }
 

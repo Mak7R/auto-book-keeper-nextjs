@@ -6,21 +6,20 @@ import ErrorsList from "@/components/ui/form/ErrorsList";
 import {getAllErrorsExclude, ProblemResponse} from "@/types/problem-response";
 import SubmitButton from "@/components/ui/form/SubmitButton";
 import {LoginModel} from "@/store/slices/auth-slice/auth-actions";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "@/store";
 import {login as loginAction} from "@/store/slices/auth-slice/auth-actions";
 
 interface LoginComponentProps {
-
+  returnUrl?: string
 }
 
 export default function LoginComponent(props: LoginComponentProps) {
   const [loginModel, setLoginModel] = useState<LoginModel>({userName: '', password: ''});
   const [isLoading, setIsLoading] = useState(false);
   const [problem, setProblem] = useState<ProblemResponse | null>(null);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  
   const dispatch = useDispatch<AppDispatch>();
   
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +30,7 @@ export default function LoginComponent(props: LoginComponentProps) {
     }));
   };
 
+  const router = useRouter();
   const handleLogin = async () => {
     setIsLoading(true)
 
@@ -38,7 +38,7 @@ export default function LoginComponent(props: LoginComponentProps) {
 
     if (loginProblem){setProblem(loginProblem)}
     else{
-      const returnUrl = searchParams.get('returnUrl') || '/'
+      const returnUrl = props.returnUrl || '/'
       router.replace(returnUrl)
     }
     setIsLoading(false)
