@@ -2,25 +2,26 @@ import ModalWindow from "@/components/ui/defaults/modal-window";
 import {Book} from "@/types/book";
 import {useRouter} from "next/navigation";
 import {getBooksService} from "@/services/providers/service-providers";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {config} from "@/config/config";
 
 interface DeleteBookActionProps {
-  book: Book | null
+  book: Book
 }
 
 export default function DeleteBookAction(props: DeleteBookActionProps){
-  const {replace} = useRouter();
-  const booksService = getBooksService();
-  
-  const handleDeleteBook = () => {
-    if (props.book){
-      booksService
-        .delete(props.book.id)
-        .then(b => {
-          replace("/books");
-        })
-        .catch(_ => console.error(_));
+  const router = useRouter()
+  const booksService = getBooksService()
+
+  const queryClient = useQueryClient()
+  const {mutate, isPending} = useMutation({
+    mutationKey: config.reactQueryKeys.books.delete(),
+    mutationFn: async () => booksService.delete(props.book.id),
+    onSuccess: async () => {
+      router.replace(config.localUrls.books.all())
+      await queryClient.invalidateQueries({queryKey: config.reactQueryKeys.books.all()})
     }
-  }
+  })
   
   return (
     <>
@@ -38,7 +39,7 @@ export default function DeleteBookAction(props: DeleteBookActionProps){
               <button className="btn btn-secondary" data-bs-dismiss="modal" >
                 Cancel
               </button>
-              <button className="btn btn-danger" data-bs-dismiss="modal" onClick={handleDeleteBook}>
+              <button className="btn btn-danger" data-bs-dismiss="modal" onClick={() => mutate()} disabled={isPending}>
                 Delete
               </button>
             </>

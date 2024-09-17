@@ -1,37 +1,27 @@
 'use client'
 
 import styles from "./transactions-list.module.css"
-import React, {useEffect, useState} from "react";
 import {getTransactionsService} from "@/services/providers/service-providers";
 import Loading from "@/components/ui/loading/loading";
 import CreateTransaction from "@/components/transactions/transactions-list/create-transaction/create-transaction";
-import {Transaction} from "@/types/transaction";
 import TransactionRow from "@/components/transactions/transactions-list/transaction-row/transaction-row";
+import {useQuery} from "@tanstack/react-query";
+import {config} from "@/config/config";
 
 interface TransactionsListProps {
   bookId: string
 }
 
-export default function TransactionList(props: TransactionsListProps): JSX.Element {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const transactionsService = getTransactionsService();
-  
-  useEffect(() => {
-    transactionsService.getAll(props.bookId)
-      .then(ts => {
-        setIsLoading(false);
-        setTransactions(ts)
-      })
-      .catch(e => console.error(e));
-  }, []);
-  
-  
+export default function TransactionList(props: TransactionsListProps) {
+  const {data, isLoading} = useQuery({
+    queryKey: config.reactQueryKeys.transactions.all(props.bookId),
+    queryFn: () => getTransactionsService().getAll(props.bookId)
+  })
   
   return (
     <div className={styles.transactionsContainer}>
       <h4 className="text-center">Transactions</h4>
-      <CreateTransaction isLoading={isLoading} bookId={props.bookId} onCreated={(t) => setTransactions(ps => [...ps, t])}/>
+      <CreateTransaction isLoading={isLoading} bookId={props.bookId}/>
       <div className={styles.transactionsBlock + " mt-2 table-responsive"}>
         {
           isLoading ? <Loading /> :
@@ -48,16 +38,10 @@ export default function TransactionList(props: TransactionsListProps): JSX.Eleme
                 </thead>
                 <tbody>
                 {
-                  transactions.map(t => 
+                  data && data.map(t => 
                     <TransactionRow
                       key={t.id}
                       transaction={t}
-                      onUpdated={updated => {
-                        setTransactions(prevState => prevState.map(item => item.id === updated.id ? updated : item))
-                      }}
-                      onDeleted={deleted => 
-                        setTransactions(prevState => prevState.filter(item => deleted.id !== item.id))
-                      }
                     />
                   )
                 }

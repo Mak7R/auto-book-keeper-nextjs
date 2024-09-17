@@ -3,25 +3,36 @@
 import ModalWindow from "@/components/ui/defaults/modal-window";
 import FormField from "@/components/ui/form/FormField";
 import FormArea from "@/components/ui/form/FormArea";
-import {useState} from "react";
+import React, {useState} from "react";
 import {getBooksService} from "@/services/providers/service-providers";
-import {Book} from "@/types/book";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {CreateBookModel} from "@/services/modelsServices/books-service";
+import {config} from "@/config/config";
 
 
 interface CreateBookProps{
   isLoading: boolean;
-  onSuccess?: (book: Book) => void;
 }
 
-interface CreateBookModel{
-  title: string;
-  description: string;
+function getDefaultNewBook(): CreateBookModel
+{
+  return {title:"", description: ""};
 }
 
 export default function CreateBook(props: CreateBookProps) {
   const booksService = getBooksService();  
   
-  const [newBook, setNewBook] = useState<CreateBookModel>({title: "", description: "", });
+  const [newBook, setNewBook] = useState<CreateBookModel>(getDefaultNewBook());
+  
+  const queryClient = useQueryClient();
+  const {mutate, isPending} = useMutation({
+    mutationKey: config.reactQueryKeys.books.create(),
+    mutationFn: async (newBook: CreateBookModel) => booksService.create(newBook),
+    onSuccess: async () => {
+      setNewBook(getDefaultNewBook())
+      await queryClient.invalidateQueries({queryKey: config.reactQueryKeys.books.all()})
+    }
+  })
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -29,17 +40,6 @@ export default function CreateBook(props: CreateBookProps) {
       ...prevState,
       [name]: value,
     }));
-  }
-  
-  const handleCreateBook = () => {
-    booksService.create(newBook as Book)
-      .then(b => {
-        setNewBook({title: "", description: "", });
-        if (props.onSuccess) {
-          props.onSuccess(b);
-        }
-      })
-      .catch(_ => console.error(_));
   }
   
   return (
@@ -51,8 +51,8 @@ export default function CreateBook(props: CreateBookProps) {
       <ModalWindow id="createBookModal" title="Create new book"
                    buttons={
                      <>
-                       <button className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {setNewBook({title:"", description: ""})}}>Cancel</button>
-                       <button className="btn btn-success" data-bs-dismiss="modal" onClick={handleCreateBook}>Create</button>
+                       <button className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {setNewBook(getDefaultNewBook())}}>Cancel</button>
+                       <button className="btn btn-success" data-bs-dismiss="modal" onClick={() => {mutate(newBook);}} disabled={isPending}>Create</button>
                      </>
                    }>
         <div>
@@ -63,7 +63,6 @@ export default function CreateBook(props: CreateBookProps) {
           <div className="mb-3">
             <FormArea label="Description: " name="description" value={newBook.description} onChange={handleInputChange} cols={2}/>
           </div>
-
         </div>
       </ModalWindow>
     </>

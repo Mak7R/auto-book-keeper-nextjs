@@ -30,14 +30,17 @@ export function getHttpService(){
     return httpServiceSingleton;
 }
 
+const usersService : IUsersService = new UsersService(getHttpService());
 export function getUsersService() : IUsersService{
-    return new UsersService(getHttpService());
+    return usersService;
 }
 
+const booksService : IBooksService = new BookService(getAuthService(), getHttpService());
 export function getBooksService() : IBooksService {
-    return new BookService(getAuthService(), getHttpService());
+    return booksService;
 }
 
+const transactionsService : ITransactionsService = new TransactionsService(getHttpService());
 export function getTransactionsService() : ITransactionsService {
-    return new TransactionsService(getHttpService());
+    return transactionsService;
 }

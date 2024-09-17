@@ -2,7 +2,6 @@ import React from 'react';
 import {Transaction} from "@/types/transaction";
 import styles from "@/components/transactions/transactions-list/transaction-row/transaction-row.module.css";
 import {formatLocalDate} from "@/libs/datatime/datatime";
-import {getTransactionsService} from "@/services/providers/service-providers";
 import UpdateTransactionAction
   from "@/components/transactions/transactions-list/transaction-row/update-transaction-action/update-transaction-action";
 import DeleteTransactionAction
@@ -10,8 +9,6 @@ import DeleteTransactionAction
 
 interface TransactionRowProps {
   transaction: Transaction;
-  onUpdated?: (transaction: Transaction) => void;
-  onDeleted?: (transaction: Transaction) => void;
 }
 
 export default function TransactionRow(props: TransactionRowProps) {
@@ -28,8 +25,8 @@ export default function TransactionRow(props: TransactionRowProps) {
         </td>
         <td className="position-relative">
           <div className={styles.fillContainer}>
-            <UpdateTransactionAction className={styles.actionsButton + " btn btn-success"} transaction={props.transaction} onUpdated={props.onUpdated} />
-            <DeleteTransactionAction className={styles.actionsButton + " btn btn-danger"} transaction={props.transaction} onDeleted={props.onDeleted}/>
+            <UpdateTransactionAction className={styles.actionsButton + " btn btn-success"} transaction={props.transaction}/>
+            <DeleteTransactionAction className={styles.actionsButton + " btn btn-danger"} transaction={props.transaction}/>
           </div>
         </td>
       </tr>

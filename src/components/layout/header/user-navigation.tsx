@@ -1,39 +1,32 @@
 'use client';
 
-import Link from 'next/link';
-
-import { useAppContext } from '@/contexts/AppContext';
-import { getAuthService } from '@/services/providers/service-providers';
-import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import NavLinkItem from "@/components/layout/header/nav-link-item/nav-link-item";
 
-const authService = getAuthService();
+import {useDispatch} from "react-redux";
+import {logout as logoutAction} from "@/store/slices/auth-slice/auth-actions";
+import {AppDispatch} from "@/store";
+import {useTypedSelector} from "@/hooks/use-typed-selector";
 
 export default function UserNavigation() {
-	const { user, setUser } = useAppContext();
-	const [ isLoggedIn, setIsLoggedIn ] = useState<boolean>(false);
-	const {push} = useRouter();
-
-	useEffect(() => {
-		if (user){
-			setIsLoggedIn(true);
-		}
-	}, []);
+	const dispatch = useDispatch<AppDispatch>();
 	
-	const handleLogout = () => {
-		authService.logout().then(_ => setUser(null));
-		push("/");
-	};
+	const isLoggedIn = useTypedSelector(state => state.auth.isLoggedIn)
+
+	// fix of problem: server and client has different html
+	const [isLoggedInLocal, setIsLoggedInLocal] = useState<boolean>(false);
+	useEffect(() => {
+		setIsLoggedInLocal(isLoggedIn);
+	}, [isLoggedIn]);
 
 	return (
 		<ul className='navbar-nav'>
-			{isLoggedIn && user ? (
+			{isLoggedInLocal ? (
 				<>
 					<NavLinkItem href="/profile">Profile</NavLinkItem>
 
 					<li className='nav-item'>
-						<button className='nav-link' onClick={handleLogout} data-bs-dismiss="offcanvas">
+						<button className='nav-link' onClick={() => dispatch(logoutAction())} data-bs-dismiss="offcanvas">
 							Logout
 						</button>
 					</li>

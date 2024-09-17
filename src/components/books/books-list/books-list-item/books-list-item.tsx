@@ -10,7 +10,6 @@ export default function BooksListItem({ book }: {book: Book}) {
     <>
       <li className={styles.booksListItem}>
         <div className={styles.bookContent}>
-          {/*{formatLocalDate(book.creationTime)}: {book.ownerId}*/}
           <div className={styles.bookMainInfo}>
             <h5 className={styles.bookTitle}>{book.title}</h5>
             <p className={styles.bookDescription}>{book.description}</p>

@@ -3,12 +3,15 @@ import {IHttpService} from "@/services/infrastructure/http-service";
 import {endpoints} from "@/config/enpoints";
 import {Book} from "@/types/book";
 
+export type CreateBookModel = Omit<Book, "id" | "ownerId" | "creationTime">
+export type UpdateBookModel = Omit<Book, "ownerId" | "creationTime">
+
 export interface IBooksService{
     getAll() : Promise<Book[]>;
     getById(bookId: string) : Promise<Book>;
     
-    create(book : Book) : Promise<Book>;
-    update(book : Book) : Promise<Book>;
+    create(book : CreateBookModel) : Promise<Book>;
+    update(book : UpdateBookModel) : Promise<Book>;
     delete(bookId: string) : Promise<Book>;
 }
 
@@ -26,7 +29,7 @@ export class BookService implements IBooksService{
         return userId;
     }
     
-    async create(book: Book): Promise<Book> {
+    async create(book: CreateBookModel): Promise<Book> {
         const userId = this.getUserId();
         
         const response = await this.httpService.fetch(endpoints.books.create.url(userId), {
@@ -34,7 +37,7 @@ export class BookService implements IBooksService{
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({"title": book.title, "description": book.description}),
+            body: JSON.stringify(book),
         })
         
         if (response.ok){
@@ -82,11 +85,11 @@ export class BookService implements IBooksService{
         throw new Error(response.statusText);
     }
 
-    async update(book: Book): Promise<Book> {
+    async update(book: UpdateBookModel): Promise<Book> {
         const response = await this.httpService.fetch(endpoints.books.update.url(book.id), {
             method: endpoints.books.update.method,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({"title": book.title, "description": book.description}),
+            body: JSON.stringify(book),
         })
 
         if (response.ok){

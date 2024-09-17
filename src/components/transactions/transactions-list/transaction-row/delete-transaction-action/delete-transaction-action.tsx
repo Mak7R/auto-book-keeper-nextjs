@@ -1,26 +1,28 @@
 import React from 'react';
 import {getTransactionsService} from "@/services/providers/service-providers";
 import {Transaction} from "@/types/transaction";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {config} from "@/config/config";
 
 interface DeleteTransactionActionProps {
   className?: string;
   transaction: Transaction;
-  onDeleted?: (transaction: Transaction) => void;
 }
 
 export default function DeleteTransactionAction(props: DeleteTransactionActionProps) {
 
-  const transactionsService = getTransactionsService();
-
-  const deleteTransactionHandler = () => {
-    transactionsService.delete(props.transaction.id)
-      .then(t => props.onDeleted ? props.onDeleted(t) : undefined)
-      .catch(e => console.error(e));
-  }
+  const queryClient = useQueryClient()
+  const {mutate, isPending} = useMutation({
+    mutationKey: config.reactQueryKeys.transactions.delete(),
+    mutationFn: async () => getTransactionsService().delete(props.transaction.id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({queryKey: config.reactQueryKeys.transactions.all(props.transaction.bookId)})
+    }
+  })
   
   return (
     <>
-      <button className={props.className} onClick={deleteTransactionHandler}>Delete</button>
+      <button className={props.className} onClick={() => mutate()} disabled={isPending}>Delete</button>
     </>
   );
 }

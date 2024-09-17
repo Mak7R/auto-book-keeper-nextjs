@@ -4,22 +4,25 @@ import {ProblemResponse} from "@/types/problem-response";
 import {RegisterResponse} from "@/types/register-response";
 import {IStorageService} from "@/services/infrastructure/local-storage-service";
 import {ILogger} from "@/services/infrastructure/logger-service";
-import {User} from "@/types/user";
 
 export interface IAuthService {
     login(userName: string, password: string) : Promise<ProblemResponse | null>;
     register(userName: string, email: string, password: string) : Promise<ProblemResponse | null>;
-
+    logout() : Promise<void>;
     refreshToken() : Promise<boolean>;
     
-    logout() : Promise<any>;
-    
-    get currentUser() : User | null
     get userId() : string | null;
-    get authorizeHeader(): string | null;
+    get authorizationHeader(): string | null;
+}
+
+const localStorageNames = {
+    userId: 'userId',
+    accessToken: 'accessToken',
+    refreshToken: 'refreshToken'
 }
 
 export class AuthService implements IAuthService {
+    
     constructor(private readonly storage: IStorageService,
                 private readonly logger: ILogger) {
     }
@@ -36,11 +39,9 @@ export class AuthService implements IAuthService {
         if (response.ok) {
             const authResponse : AuthResponse = await response.json();
 
-            this.storage.setItem('userId', authResponse.userId);
-            this.storage.setItem('accessToken', authResponse.accessToken);
-            this.storage.setItem('refreshToken', authResponse.refreshToken);
-
-            await this.fetchUser();
+            this.storage.setItem(localStorageNames.userId, authResponse.userId);
+            this.storage.setItem(localStorageNames.accessToken, authResponse.accessToken);
+            this.storage.setItem(localStorageNames.refreshToken, authResponse.refreshToken);
 
             return null;
         }
@@ -68,8 +69,7 @@ export class AuthService implements IAuthService {
         
         if (response.ok) {
             const registerResponse : RegisterResponse = await response.json();
-            // todo map register response to user
-            this.storage.setItem('user', registerResponse);
+            // todo register logic
             await this.login(userName, password);
             return null;
         }
@@ -87,32 +87,27 @@ export class AuthService implements IAuthService {
     }
     
     logout(): Promise<void> {
-        this.storage.removeItem('user');
-        this.storage.removeItem('userId');
-        this.storage.removeItem('accessToken');
-        this.storage.removeItem('refreshToken');
+        this.storage.removeItem(localStorageNames.userId);
+        this.storage.removeItem(localStorageNames.accessToken);
+        this.storage.removeItem(localStorageNames.refreshToken);
         return Promise.resolve();
     }
     
-    get currentUser() : User | null{
-        return this.storage.getItem('user')
-    }
-    
     get userId() : string | null{
-        return this.storage.getItem('userId');
+        return this.storage.getItem(localStorageNames.userId);
     }
     
-    get authorizeHeader(): string | null {
-        const accessToken = this.storage.getItem('accessToken');
+    get authorizationHeader(): string | null{
+        const accessToken = this.storage.getItem(localStorageNames.accessToken);
         if (accessToken){
             return 'Bearer ' + accessToken;
         }
         return null;
     }
-
+    
     async refreshToken() : Promise<boolean> {
-        const userId = this.storage.getItem('userId');
-        const refreshToken = this.storage.getItem('refreshToken');
+        const userId = this.storage.getItem(localStorageNames.userId);
+        const refreshToken = this.storage.getItem(localStorageNames.refreshToken);
         
         if (!userId || !refreshToken)
             return false;
@@ -124,47 +119,16 @@ export class AuthService implements IAuthService {
             },
             body: JSON.stringify({ userId, refreshToken }),
         });
-
+        
         const authResponse : AuthResponse | any = await response.json();
         if (response.ok) {
-            this.storage.setItem('accessToken', authResponse.accessToken);
-            this.storage.setItem('refreshToken', authResponse.refreshToken);
+            console.info("Auth tokens was successfully refreshed");
+            this.storage.setItem(localStorageNames.accessToken, authResponse.accessToken);
+            this.storage.setItem(localStorageNames.refreshToken, authResponse.refreshToken);
             return true;
         } else {
             await this.logout();
             return false;
         }
-    }
-    
-    private async fetchUser() : Promise<void> {        
-        const __fetchUser = async (userId: string, authHeader: string) : Promise<boolean> => {
-            const response = await fetch(endpoints.users.getById.url(userId), {
-                method: endpoints.users.getById.method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': authHeader,
-                },
-            });
-
-            if (response.ok){
-                const user = await response.json();
-                this.storage.setItem('user', user);
-                return true;
-            }
-            
-            return false;
-        }
-        
-        const userId = this.storage.getItem<string>('userId');
-        if (!userId) return;
-
-        const authHeader = this.authorizeHeader;
-        if (!authHeader) return;
-        
-        await __fetchUser(userId, authHeader);
-        
-        await this.refreshToken();
-        
-        await __fetchUser(userId, authHeader);
     }
 }

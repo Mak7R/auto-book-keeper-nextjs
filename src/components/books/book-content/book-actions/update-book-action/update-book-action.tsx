@@ -2,51 +2,40 @@ import {Book} from "@/types/book";
 import ModalWindow from "@/components/ui/defaults/modal-window";
 import FormField from "@/components/ui/form/FormField";
 import FormArea from "@/components/ui/form/FormArea";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {getBooksService} from "@/services/providers/service-providers";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {config} from "@/config/config";
+import {useRouter} from "next/navigation";
+import {UpdateBookModel} from "@/services/modelsServices/books-service";
 
 interface UpdateBookActionProps {
-  book: Book | null;
-  onSuccess?: (book: Book) => void;
+  book: Book;
 }
 
-interface UpdateBookModel{
-  title: string;
-  description: string;
+function getDefaultUpdateBookModel(book: Book): UpdateBookModel {
+  return {id: book.id, title: book.title, description: book.description, }
 }
 
 export default function UpdateBookAction(props: UpdateBookActionProps) {
-  const booksService = getBooksService();
-  const [updateBook, setUpdateBook] = 
-    useState<UpdateBookModel>( 
-      {title: props.book?.title ?? "", description: props.book?.description ?? "", });
-
-  useEffect(() => {
-    if (props.book) {
-      setUpdateBook({
-        title: props.book.title,
-        description: props.book.description,
-      });
-    }
-  }, [props.book]);
+  const [updateBook, setUpdateBook] = useState<UpdateBookModel>(getDefaultUpdateBookModel(props.book));
   
+  const queryClient = useQueryClient()
+  const {mutate, isPending} = useMutation({
+    mutationKey: config.reactQueryKeys.books.update(),
+    mutationFn: async (updateBook: UpdateBookModel) => getBooksService().update(updateBook),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({queryKey: config.reactQueryKeys.books.all()})
+      await queryClient.invalidateQueries({queryKey: config.reactQueryKeys.books.byId(props.book.id)})
+    }
+  })
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setUpdateBook(prevState => ({
       ...prevState,
       [name]: value,
     }));
-  }
-  
-  const handleUpdateBook = () => {
-    booksService.update({...updateBook, id: props.book?.id} as Book)
-      .then(b => {
-        setUpdateBook({title: b.title, description: b.description, });
-        if (props.onSuccess) {
-          props.onSuccess(b);
-        }
-      })
-      .catch(_ => console.error(_));
   }
   
   return (
@@ -62,23 +51,15 @@ export default function UpdateBookAction(props: UpdateBookActionProps) {
                        <button 
                          className="btn btn-secondary" 
                          data-bs-dismiss="modal" 
-                         onClick={
-                           () => {
-                             setUpdateBook(
-                               {
-                                 title: props.book?.title ?? "", 
-                                 description: props.book?.description ?? "", 
-                               }
-                             )
-                           }
-                         }
+                         onClick={() => setUpdateBook(getDefaultUpdateBookModel(props.book))}
                        >
                          Cancel
                        </button>
                        <button 
                          className="btn btn-success" 
                          data-bs-dismiss="modal" 
-                         onClick={handleUpdateBook}
+                         onClick={() => mutate(updateBook)}
+                         disabled={isPending}
                        >
                          Update
                        </button>

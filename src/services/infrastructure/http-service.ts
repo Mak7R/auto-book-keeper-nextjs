@@ -23,7 +23,7 @@ export class HttpService implements IHttpService {
     }
     
     private insertAuthorization(init?: RequestInit) : RequestInit | undefined {
-        const authHeader = this.authService.authorizeHeader;
+        const authHeader = this.authService.authorizationHeader;
         
         if (authHeader){
             if (init){
@@ -35,14 +35,14 @@ export class HttpService implements IHttpService {
                 }
                 else{
                     init.headers = {
-                        "Authorization": this.authService.authorizeHeader,
+                        "Authorization": this.authService.authorizationHeader,
                     };
                 }
 
             }
             else{
                 init = {headers: {
-                        "Authorization": this.authService.authorizeHeader,
+                        "Authorization": this.authService.authorizationHeader,
                     }};
             }
         }

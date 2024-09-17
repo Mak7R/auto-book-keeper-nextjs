@@ -4,22 +4,18 @@ import ModalWindow from "@/components/ui/defaults/modal-window";
 import {getTransactionsService} from "@/services/providers/service-providers";
 import React, {useState} from "react";
 import {Transaction} from "@/types/transaction";
+import {CreateTransactionModel} from "@/services/modelsServices/transactions-service";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {config} from "@/config/config";
 
 interface CreateTransactionProps{
   isLoading: boolean;
   bookId: string
-  onCreated?: (transaction: Transaction) => void;
 }
 
-interface CreateTransactionModel {
-  nameIdentifier: string;
-  description: string;
-  value: number;
-  transactionTime: string
-}
-
-function defaultTransactionModel() : CreateTransactionModel {
+function defaultTransactionModel(bookId: string) : CreateTransactionModel {
   return {
+    bookId: bookId,
     nameIdentifier: "",
     description: "",
     value: 0,
@@ -28,9 +24,8 @@ function defaultTransactionModel() : CreateTransactionModel {
 }
 
 export default function CreateTransaction(props: CreateTransactionProps) {
-  const transactionsService = getTransactionsService();
 
-  const [createTransactionModel, setCreateTransactionModel] = useState<CreateTransactionModel>(defaultTransactionModel());
+  const [createTransactionModel, setCreateTransactionModel] = useState<CreateTransactionModel>(defaultTransactionModel(props.bookId));
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -40,18 +35,15 @@ export default function CreateTransaction(props: CreateTransactionProps) {
     }));
   }
 
-  const handleCreateTransaction = () => {
-   { // @ts-ignore
-      transactionsService.create({...createTransactionModel, bookId: props.bookId} as Transaction)
-            .then(t => {
-              setCreateTransactionModel(defaultTransactionModel());
-              if (props.onCreated) {
-                props.onCreated(t);
-              }
-            })
-            .catch(_ => console.error(_));
+  const queryClient = useQueryClient();
+  const {mutate, isPending} = useMutation({
+    mutationKey: config.reactQueryKeys.transactions.create(),
+    mutationFn: async (newTransaction: CreateTransactionModel) => getTransactionsService().create(newTransaction),
+    onSuccess: async () => {
+      setCreateTransactionModel(defaultTransactionModel(props.bookId))
+      await queryClient.invalidateQueries({queryKey: config.reactQueryKeys.transactions.all(props.bookId)})
     }
-  }
+  })
   
   return (
     <>
@@ -62,8 +54,8 @@ export default function CreateTransaction(props: CreateTransactionProps) {
       <ModalWindow id="createTransactionModal" title="Create new book"
                    buttons={
                      <>
-                       <button className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {setCreateTransactionModel(defaultTransactionModel())}}>Cancel</button>
-                       <button className="btn btn-success" data-bs-dismiss="modal" onClick={handleCreateTransaction}>Create</button>
+                       <button className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => {setCreateTransactionModel(defaultTransactionModel(props.bookId))}}>Cancel</button>
+                       <button className="btn btn-success" data-bs-dismiss="modal" onClick={() => mutate(createTransactionModel)} disabled={isPending}>Create</button>
                      </>
                    }>
         <div>

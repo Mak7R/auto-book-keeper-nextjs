@@ -37,6 +37,9 @@
   margin: 0;
   font-size: small;
   color: gray;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .bookAdditionalInfo{

@@ -1,33 +1,15 @@
 'use client';
 
-import { useAppContext } from '@/contexts/AppContext';
-import { getAuthService } from '@/services/providers/service-providers';
-import {useRouter} from "next/navigation";
-
-const authService = getAuthService();
+import ProfileComponent from "@/components/users/profile-component/profile-component";
+import AuthRequired from "@/components/helpers/auth-required/auth-required";
+import {config} from "@/config/config";
 
 export default function ProfilePage() {
-	const { user } = useAppContext();
-	const {push} = useRouter();
-	
-	if (!user){
-		push("/login");
-	}
-	
-	return (
+		return (
 		<>
-			<div className='container'>
-				<h1 className='text-center'>Profile</h1>
-
-				<p className='fs-5'>
-					Id: {user ? <>{user.id}</> : <>Loading</>}
-				</p>
-				<p className='fs-4'>
-					Name: {user ? <>{user.userName}</> : <>Loading</>}
-				</p>
-				<p className='fs-4'>
-					Email: {user ? <>{user.email}</> : <>Loading</>}
-				</p>
+			<AuthRequired returnUrl={config.localUrls.users.profile()}/>
+			<div className='container mt-3'>
+				<ProfileComponent/>
 			</div>
 		</>
 	);

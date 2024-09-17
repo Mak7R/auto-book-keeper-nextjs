@@ -2,40 +2,16 @@
 
 import Loading from "@/components/ui/loading/loading";
 import BooksListItem from "@/components/books/books-list/books-list-item/books-list-item";
-import {useEffect, useState} from "react";
-import {useAppContext} from "@/contexts/AppContext";
-import {useRouter} from "next/navigation";
 import {getBooksService} from "@/services/providers/service-providers";
 import CreateBook from "@/components/books/books-list/create-book/create-book";
-import {Book} from "@/types/book";
+import {useQuery} from "@tanstack/react-query";
+import {config} from "@/config/config";
 
-
-interface BooksListProps{
-  
-}
-
-export default function BooksList(props: BooksListProps){
-  const booksService = getBooksService();
-  const [books, setBooks] = useState<Book[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const {user} = useAppContext();
-  const {push} = useRouter();
-  
-  if (!user) {push("/login?returnUrl=/books");}
-
-  useEffect(() => {
-    booksService
-      .getAll()
-      .then(books => {
-        setIsLoading(false);
-        setBooks(books);
-      })
-      .catch(error => {
-        // TODO handle errors
-        // todo handle unauthorized with redirect
-        console.log(error);
-      });
-  }, []);
+export default function BooksList(){
+  const {data, isLoading} = useQuery({
+    queryKey: config.reactQueryKeys.books.all(),
+    queryFn: () => getBooksService().getAll()
+  })
   
   return (
     <>
@@ -48,11 +24,11 @@ export default function BooksList(props: BooksListProps){
           </div>
           :
           <ul className='p-0'>
-            {books.map(book => (<BooksListItem book={book} key={book.id}/>))}
+            {data && data.map(book => (<BooksListItem book={book} key={book.id}/>))}
           </ul>
       }
       
-      <CreateBook isLoading={isLoading} onSuccess={book => setBooks(prevState => [...prevState, book])}/>
+      <CreateBook isLoading={isLoading}/>
     </>
   );
 }

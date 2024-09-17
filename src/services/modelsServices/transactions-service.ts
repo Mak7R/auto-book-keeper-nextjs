@@ -1,14 +1,17 @@
 import {endpoints} from "@/config/enpoints";
 import {IHttpService} from "@/services/infrastructure/http-service";
 import {Transaction} from "@/types/transaction";
+import {Book} from "@/types/book";
 
+export type CreateTransactionModel = Omit<Transaction, "id" | "ownerId">
+export type UpdateTransactionModel = Omit<Transaction, "ownerId" | "bookId">
 
 export interface ITransactionsService{
   getAll(bookId: string) : Promise<Transaction[]>;
   getById(transactionId: string) : Promise<Transaction>;
 
-  create(transaction : Transaction) : Promise<Transaction>;
-  update(transaction : Transaction) : Promise<Transaction>;
+  create(transaction : CreateTransactionModel) : Promise<Transaction>;
+  update(transaction : UpdateTransactionModel) : Promise<Transaction>;
   delete(transactionId: string) : Promise<Transaction>;
 }
 
@@ -16,7 +19,7 @@ export class TransactionsService implements ITransactionsService{
   constructor(private readonly httpService: IHttpService) {
   }
   
-  async create(transaction: Transaction): Promise<Transaction> {
+  async create(transaction: CreateTransactionModel): Promise<Transaction> {
     const createTransactionModel = transaction.transactionTime === "" ?
       {...transaction, transactionTime: null} : 
       {...transaction, transactionTime: new Date(transaction.transactionTime)};
@@ -72,7 +75,7 @@ export class TransactionsService implements ITransactionsService{
     throw new Error(response.statusText);
   }
 
-  async update(transaction: Transaction): Promise<Transaction> {
+  async update(transaction: UpdateTransactionModel): Promise<Transaction> {
     const updateTransactionModel = transaction.transactionTime === "" ?
       {...transaction, transactionTime: null} :
       {...transaction, transactionTime: new Date(transaction.transactionTime)};

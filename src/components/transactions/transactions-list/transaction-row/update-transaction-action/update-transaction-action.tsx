@@ -1,55 +1,42 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import ModalWindow from "@/components/ui/defaults/modal-window";
 import {Transaction} from "@/types/transaction";
-import {getBooksService, getTransactionsService} from "@/services/providers/service-providers";
+import {getTransactionsService} from "@/services/providers/service-providers";
 import FormField from "@/components/ui/form/FormField";
 import FormArea from "@/components/ui/form/FormArea";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {config} from "@/config/config";
+import {UpdateTransactionModel} from "@/services/modelsServices/transactions-service";
 
 interface UpdateTransactionActionProps {
   transaction: Transaction;
   className?: string;
-  onUpdated?: (transaction: Transaction) => void;
 }
 
-interface UpdateTransactionModel{
-  id: string
-  nameIdentifier: string
-  description: string
-  value: number
-  transactionTime: string
-}
-
-const getDefaultTransactionModel = (transaction?: Transaction) : UpdateTransactionModel => {
+const getDefaultTransactionModel = (transaction: Transaction) : UpdateTransactionModel => {
   return {
-    id: transaction?.id ?? "",
-    nameIdentifier: transaction?.nameIdentifier ?? "",
-    value: transaction?.value ?? 0,
-    description: transaction?.description ?? "",
-    transactionTime: transaction?.transactionTime ?? "",
+    id: transaction.id,
+    nameIdentifier: transaction.nameIdentifier,
+    value: transaction.value,
+    description: transaction.description,
+    transactionTime: transaction.transactionTime,
   };
 }
 
 export default function UpdateTransactionAction(props: UpdateTransactionActionProps) {
-  const transactionsService = getTransactionsService();
-  
   const [updateTransaction, setUpdateTransaction] = useState<UpdateTransactionModel>(getDefaultTransactionModel(props.transaction));
-
-  useEffect(() => {
-    if (props.transaction) {
-      setUpdateTransaction(getDefaultTransactionModel(props.transaction));
-    }
-  }, [props.transaction]);
   
   const modalWindowId = "updateTransaction"+props.transaction.id;
-  
-  const updateTransactionHandler = () => {
-    transactionsService
-      .update(updateTransaction as Transaction)
-      .then(t => {
-        if (props.onUpdated) props.onUpdated(t); 
-      })
-      .catch(e => console.log(e));
-  }
+
+  const queryClient = useQueryClient()
+  const {mutate, isPending} = useMutation({
+    mutationKey: config.reactQueryKeys.transactions.update(),
+    mutationFn: async (updateTransactionModel: UpdateTransactionModel) => getTransactionsService().update(updateTransactionModel),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({queryKey: config.reactQueryKeys.transactions.all(props.transaction.bookId)})
+      await queryClient.invalidateQueries({queryKey: config.reactQueryKeys.transactions.byId(props.transaction.id)})
+    }
+  })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -80,7 +67,8 @@ export default function UpdateTransactionAction(props: UpdateTransactionActionPr
             <button
               className="btn btn-success"
               data-bs-dismiss="modal"
-              onClick={updateTransactionHandler}
+              onClick={() => mutate(updateTransaction)}
+              disabled={isPending}
             >
               Update
             </button>
