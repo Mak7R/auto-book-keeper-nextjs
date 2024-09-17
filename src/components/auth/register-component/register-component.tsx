@@ -14,7 +14,7 @@ interface RegisterComponentProps {
 
 }
 
-export default function RegisterComponent(props: RegisterComponentProps) {
+function PrivateRegisterComponent(props: RegisterComponentProps) {
   const [registerModel, setRegisterModel] = useState<RegisterModel>({
     userName: '',
     email: '',
@@ -96,4 +96,12 @@ export default function RegisterComponent(props: RegisterComponentProps) {
       </Suspense>
     </>
   );
+}
+
+export default function RegisterComponent(props: RegisterComponentProps){
+  return (
+    <Suspense fallback={<Loading/>}>
+      <PrivateRegisterComponent {...props}/>
+    </Suspense>
+  )
 }

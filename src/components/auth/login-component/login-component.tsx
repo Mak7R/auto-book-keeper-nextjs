@@ -16,7 +16,7 @@ interface LoginComponentProps {
   
 }
 
-export default function LoginComponent(props: LoginComponentProps) {
+function PrivateLoginComponent(props: LoginComponentProps) {
   const [loginModel, setLoginModel] = useState<LoginModel>({userName: '', password: ''});
   const [isLoading, setIsLoading] = useState(false);
   const [problem, setProblem] = useState<ProblemResponse | null>(null);
@@ -44,11 +44,10 @@ export default function LoginComponent(props: LoginComponentProps) {
       router.replace(returnUrl)
     }
     setIsLoading(false)
-  };
+  }
   
   return (
     <>
-      <Suspense fallback={<Loading/>}>
       <h1 className='text-center mt-2'>Login</h1>
       <div className='mb-3'>
         <FormField
@@ -81,7 +80,14 @@ export default function LoginComponent(props: LoginComponentProps) {
       <div className='mb-3'>
         <SubmitButton isLoading={isLoading} handleClick={handleLogin}>Login</SubmitButton>
       </div>
-      </Suspense>
     </>
   );
+}
+
+export default function LoginComponent(props: LoginComponentProps){
+  return (
+    <Suspense fallback={<Loading/>}>
+      <PrivateLoginComponent {...props}/>
+    </Suspense>
+  )
 }
