@@ -1,16 +1,17 @@
 'use client'
 
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, Suspense, useState} from 'react';
 import FormField from "@/components/ui/form/FormField";
 import ErrorsList from "@/components/ui/form/ErrorsList";
 import {getAllErrorsExclude, ProblemResponse} from "@/types/problem-response";
 import {register as registerAction, RegisterModel} from "@/store/slices/auth-slice/auth-actions";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "@/store";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
+import Loading from "@/components/ui/loading/loading";
 
 interface RegisterComponentProps {
-  returnUrl?: string
+
 }
 
 export default function RegisterComponent(props: RegisterComponentProps) {
@@ -33,6 +34,7 @@ export default function RegisterComponent(props: RegisterComponentProps) {
   };
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const handleRegister = async () => {
     setIsLoading(true);
 
@@ -40,7 +42,7 @@ export default function RegisterComponent(props: RegisterComponentProps) {
 
     if (registerProblem){setProblem(registerProblem);}
     else{
-      const returnUrl = props.returnUrl || '/'
+      const returnUrl = searchParams.get('returnUrl') || '/'
       router.replace(returnUrl)
     }
 
@@ -49,6 +51,7 @@ export default function RegisterComponent(props: RegisterComponentProps) {
   
   return (
     <>
+      <Suspense fallback={<Loading/>}>
       <h1 className="text-center mt-2">Register</h1>
       <div className="mb-3">
         <FormField
@@ -90,6 +93,7 @@ export default function RegisterComponent(props: RegisterComponentProps) {
       <div className="mb-3">
         <button className="btn btn-success" onClick={handleRegister} disabled={isLoading}>Register</button>
       </div>
+      </Suspense>
     </>
   );
 }

@@ -1,18 +1,19 @@
 'use client'
 
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, Suspense, useState} from 'react';
 import FormField from "@/components/ui/form/FormField";
 import ErrorsList from "@/components/ui/form/ErrorsList";
 import {getAllErrorsExclude, ProblemResponse} from "@/types/problem-response";
 import SubmitButton from "@/components/ui/form/SubmitButton";
 import {LoginModel} from "@/store/slices/auth-slice/auth-actions";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "@/store";
 import {login as loginAction} from "@/store/slices/auth-slice/auth-actions";
+import Loading from "@/components/ui/loading/loading";
 
 interface LoginComponentProps {
-  returnUrl?: string
+  
 }
 
 export default function LoginComponent(props: LoginComponentProps) {
@@ -31,6 +32,7 @@ export default function LoginComponent(props: LoginComponentProps) {
   };
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const handleLogin = async () => {
     setIsLoading(true)
 
@@ -38,7 +40,7 @@ export default function LoginComponent(props: LoginComponentProps) {
 
     if (loginProblem){setProblem(loginProblem)}
     else{
-      const returnUrl = props.returnUrl || '/'
+      const returnUrl = searchParams.get('returnUrl') || '/'
       router.replace(returnUrl)
     }
     setIsLoading(false)
@@ -46,6 +48,7 @@ export default function LoginComponent(props: LoginComponentProps) {
   
   return (
     <>
+      <Suspense fallback={<Loading/>}>
       <h1 className='text-center mt-2'>Login</h1>
       <div className='mb-3'>
         <FormField
@@ -78,6 +81,7 @@ export default function LoginComponent(props: LoginComponentProps) {
       <div className='mb-3'>
         <SubmitButton isLoading={isLoading} handleClick={handleLogin}>Login</SubmitButton>
       </div>
+      </Suspense>
     </>
   );
 }
