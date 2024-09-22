@@ -1,0 +1,9 @@
+
+
+.statContainer{
+  border: 1px solid gray;
+  border-radius: 20px;
+  padding: 10px;
+  background-color: lightcyan;
+  margin: 2px 2px 10px 2px;
+}

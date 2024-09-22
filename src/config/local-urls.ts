@@ -11,5 +11,8 @@ export const localUrls = {
   },
   users: {
     profile: () => "/profile",
+  },
+  forecasts: {
+    index: (bookId: string) => `/books/${bookId}/forecasts`,
   }
 }

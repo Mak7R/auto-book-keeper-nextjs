@@ -5,6 +5,8 @@ import {ConsoleLoggerService, ILogger} from "@/services/infrastructure/logger-se
 import {BookService, IBooksService} from "@/services/modelsServices/books-service";
 import {ITransactionsService, TransactionsService} from "@/services/modelsServices/transactions-service";
 import {IUsersService, UsersService} from "@/services/modelsServices/users-service";
+import {CalculationsService, ICalculationsService} from "@/services/modelsServices/calculations-service";
+import {ForecastsService, IForecastsService} from "@/services/modelsServices/forecasts-service";
 
 
 
@@ -43,4 +45,14 @@ export function getBooksService() : IBooksService {
 const transactionsService : ITransactionsService = new TransactionsService(getHttpService());
 export function getTransactionsService() : ITransactionsService {
     return transactionsService;
+}
+
+const calcService : ICalculationsService = new CalculationsService(getHttpService());
+export function getCalculationsService() : ICalculationsService {
+    return calcService;
+}
+
+const forecastsService : IForecastsService = new ForecastsService(getHttpService())
+export function getForecastsService() : IForecastsService {
+    return forecastsService;
 }

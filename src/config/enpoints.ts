@@ -64,5 +64,41 @@ export const endpoints = {
             method: 'DELETE',
             url: (transactionId: string) => `${apiServer}/api/v1/users/books/transactions/${transactionId}`
         }
+    },
+    calculations: {
+        sum: {
+            method: 'GET',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/sum`
+        },
+        balance: {
+            method: 'GET',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/balance`
+        },
+        balanceByDate: {
+            method: 'GET',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/balance-by-date`
+        },
+        average: {
+            method: 'GET',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/average-transaction`
+        },
+        max: {
+            method: 'GET',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/max-transaction`
+        },
+        min: {
+            method: 'GET',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/min-transaction`
+        },
+        volatility: {
+            method: 'GET',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/volatility`
+        }
+    },
+    forecasts: {
+        forecast: {
+            method: 'GET',
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/forecasts/polynomial-balance`
+        }
     }
 }

@@ -8,17 +8,17 @@ import UsernameRef from "@/components/users/username-ref/username-ref";
 import {useQuery} from "@tanstack/react-query";
 import {config} from "@/config/config";
 import {formatLocalDate} from "@/libs/datatime/datatime";
+import React from "react";
+import BookStatistic from "@/components/books/book-content/book-statistic/book-statistic";
 
 interface MainBookInfoProps {
   bookId: string
 }
 
 export default function MainBookInfo(props: MainBookInfoProps) {
-  const booksService = getBooksService();
-
   const {data, isLoading} = useQuery({
     queryKey: config.reactQueryKeys.books.byId(props.bookId),
-    queryFn: () => booksService.getById(props.bookId)
+    queryFn: () => getBooksService().getById(props.bookId)
   });
   
   return (
@@ -38,6 +38,7 @@ export default function MainBookInfo(props: MainBookInfoProps) {
         </div>
       </div>
       <BookActions book={data} />
+      { data && <BookStatistic book={data} />}
     </>
   )
 }

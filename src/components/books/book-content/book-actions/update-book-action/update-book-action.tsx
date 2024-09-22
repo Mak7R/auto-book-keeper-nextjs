@@ -1,12 +1,13 @@
+'use client'
+
 import {Book} from "@/types/book";
 import ModalWindow from "@/components/ui/defaults/modal-window";
 import FormField from "@/components/ui/form/FormField";
 import FormArea from "@/components/ui/form/FormArea";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {getBooksService} from "@/services/providers/service-providers";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {config} from "@/config/config";
-import {useRouter} from "next/navigation";
 import {UpdateBookModel} from "@/services/modelsServices/books-service";
 
 interface UpdateBookActionProps {

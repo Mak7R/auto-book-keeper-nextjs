@@ -14,5 +14,17 @@ export const reactQueryKeys = {
     create: () => ['transactions', 'create'],
     delete: () => ['transactions', 'delete'],
     update: () => ['transactions', 'update'],
+  },
+  calculations: {
+    sum: (bookId: string) => ['books', bookId, 'calculations', 'sum'],
+    balance: (bookId: string) => ['books', bookId, 'calculations', 'balance'],
+    balanceByDate: (bookId: string) => ['books', bookId, 'calculations', 'balance', 'by-date'],
+    average: (bookId: string) => ['books', bookId, 'calculations', 'average'],
+    max: (bookId: string) => ['books', bookId, 'calculations', 'max'],
+    min: (bookId: string) => ['books', bookId, 'calculations', 'min'],
+    volatility: (bookId: string) => ['books', bookId, 'calculations', 'volatility'],
+  },
+  forecasts: {
+    forecast: (bookId: string) => ['books', bookId, 'forecast'],
   }
 }

@@ -26,7 +26,7 @@ export default function DeleteBookAction(props: DeleteBookActionProps){
   return (
     <>
       <button
-        className={'w-100 btn rounded-5 btn-danger' + (props.book === null ? ' disabled' : '')} data-bs-toggle="modal" data-bs-target="#deleteBookModal">
+        className='w-100 btn rounded-5 btn-danger' data-bs-toggle="modal" data-bs-target="#deleteBookModal">
         Delete
       </button>
 

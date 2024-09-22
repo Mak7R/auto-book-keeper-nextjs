@@ -44,7 +44,7 @@ export default function CreateBook(props: CreateBookProps) {
   
   return (
     <>
-      <button className={'d-block w-100 btn btn-success rounded-5' + (props.isLoading ? " disabled" : "")} data-bs-toggle="modal" data-bs-target="#createBookModal">
+      <button className={'d-block w-100 btn btn-success rounded-5' + (props.isLoading || isPending ? " disabled" : "")} data-bs-toggle="modal" data-bs-target="#createBookModal" disabled={props.isLoading || isPending}>
         Create new book
       </button>
 
