@@ -16,7 +16,7 @@ import {
   Legend,
 } from 'chart.js';
 import {Line} from "react-chartjs-2";
-import LoginComponent from "@/components/auth/login-component/login-component";
+import Loading from "@/components/ui/loading/loading";
 
 ChartJS.register(
   CategoryScale,
@@ -39,25 +39,29 @@ export default function ForecastComponent(props: ForecastComponentProps) {
   });
 
   const { data: forecastData, isLoading: forecastLoading, isError: forecastError } = useQuery({
-    queryKey: config.reactQueryKeys.forecasts.forecast(props.bookId),
+    queryKey: config.reactQueryKeys.forecasts.polynomialBalance(props.bookId),
     queryFn: () => getForecastsService().forecast(props.bookId, new Date(new Date().setDate(new Date().getDate() + 7)))
   });
 
   if (balanceLoading || forecastLoading) {
-    return <LoginComponent/>;
+    return <Loading/>;
   }
 
   if (balanceError || forecastError) {
     return <div>Error loading data</div>;
   }
-  
+
   if (!balanceData || !forecastData){
-    return <LoginComponent/>;
+    return <Loading/>;
   }
-  
-  const labels = Object.keys(balanceData).concat(Object.keys(forecastData));
+
+  const balanceLabels = Object.keys(balanceData).map(d => d.split('T')[0]);
+  const forecastLabels = Object.keys(forecastData).map(d => d.split('T')[0]);
+
   const balanceValues = Object.values(balanceData);
   const forecastValues = Object.values(forecastData);
+  
+  const labels = [...balanceLabels, ...forecastLabels];
 
   const data = {
     labels,
@@ -71,10 +75,11 @@ export default function ForecastComponent(props: ForecastComponentProps) {
       },
       {
         label: 'Forecast',
-        data: forecastValues,
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        data: balanceValues.concat(forecastValues),
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
         fill: false,
+        borderDash: [5, 5],
       }
     ],
   };

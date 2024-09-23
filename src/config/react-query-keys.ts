@@ -25,6 +25,6 @@ export const reactQueryKeys = {
     volatility: (bookId: string) => ['books', bookId, 'calculations', 'volatility'],
   },
   forecasts: {
-    forecast: (bookId: string) => ['books', bookId, 'forecast'],
+    polynomialBalance: (bookId: string) => ['books', bookId, 'forecasts', 'polynomial', 'balance'],
   }
 }

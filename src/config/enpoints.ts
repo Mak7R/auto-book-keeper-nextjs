@@ -96,9 +96,9 @@ export const endpoints = {
         }
     },
     forecasts: {
-        forecast: {
+        polynomialBalance: {
             method: 'GET',
-            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/transactions/forecasts/polynomial-balance`
+            url: (bookId: string) => `${apiServer}/api/v1/users/books/${bookId}/forecasts/polynomial-balance`
         }
     }
 }

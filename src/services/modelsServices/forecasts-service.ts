@@ -10,8 +10,8 @@ export class ForecastsService implements IForecastsService{
   }
   
   async forecast(bookId: string, date: Date) : Promise<Record<string, number>> {
-    const response = await this.httpService.fetch(endpoints.forecasts.forecast.url(bookId) + `?endDate=${date.toISOString()}`, {
-      method: endpoints.forecasts.forecast.method,
+    const response = await this.httpService.fetch(endpoints.forecasts.polynomialBalance.url(bookId) + `?endDate=${date.toISOString()}`, {
+      method: endpoints.forecasts.polynomialBalance.method,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -20,7 +20,7 @@ export class ForecastsService implements IForecastsService{
     if (response.ok){
       return response.json();
     }
-
+    response.json().then(r => console.log(r))
     throw new Error(response.statusText);
   }
 }
